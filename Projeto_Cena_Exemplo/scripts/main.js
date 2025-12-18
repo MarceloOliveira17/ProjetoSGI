@@ -152,8 +152,14 @@ new GLTFLoader().load(
         } catch (err) {
             console.warn('Could not compute model center or reposition camera:', err);
         }
+
+                console.log(
+        gltf.animations.map(a => a.name)
+        );
+
     }
 );
+
 
 // Renderizar/Animar
 {
