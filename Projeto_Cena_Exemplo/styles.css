@@ -88,7 +88,7 @@ img {
 
 /* Botão de ligar prato (centro inferior, acima do botão ajuda) */
 #btn-prato {
-    position: absolute;
+    position: relative;
     bottom: 80px; /* Ajusta para não ficar em cima do botão Ajuda */
     left: 50%;
     transform: translateX(-50%);
@@ -101,6 +101,7 @@ img {
     align-items: center;
     gap: 10px;
     z-index: 100; /* Garante que fica por cima do canvas 3D */
+    pointer-events: auto;
 }
 
 #btn-prato:hover {
