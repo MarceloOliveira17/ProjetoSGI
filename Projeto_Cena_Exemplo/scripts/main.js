@@ -70,6 +70,16 @@ new GLTFLoader().load(
     function (gltf) {
         // Informação: 1 Unidade = 0.1m = 1 dm = 10 cm
         cena.add(gltf.scene);
+        let baseMeshes = [];
+ 
+       gltf.scene.traverse((obj) => {
+            if (obj.isMesh) {
+                if (obj.name === "Base") {
+                    obj.material = obj.material.clone();
+                    baseMeshes.push(obj);
+                }
+            }
+        });
 
         mixer = new THREE.AnimationMixer(gltf.scene);
         if (gltf.animations.length > 0) {
@@ -107,6 +117,17 @@ new GLTFLoader().load(
                     obj.material.needsUpdate = true;
                 }
             }
+        });
+
+        document.querySelectorAll(".color-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const color = btn.dataset.color;
+ 
+                baseMeshes.forEach(mesh => {
+                    mesh.material.color.set(color);
+                    mesh.material.needsUpdate = true;
+                });
+            });
         });
 
         // Calcular o centro da caixa delimitadora do modelo e recentralizar
