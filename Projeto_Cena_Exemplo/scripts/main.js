@@ -76,7 +76,7 @@ new GLTFLoader().load(
             actionPrato = mixer.clipAction(gltf.animations[0]);
             actionPrato.loop = THREE.LoopRepeat;
 
-            // 🔴 IMPORTANTE: iniciar e pausar
+            // Iniciar a animação do prato, mas pausada
             actionPrato.play();
             actionPrato.paused = true;
         }
@@ -167,18 +167,26 @@ new GLTFLoader().load(
 
     const btnPrato = document.getElementById('btn-prato');
     const btnTexto = btnPrato.querySelector('span');
-
     btnPrato.addEventListener('click', () => {
         if (!actionPrato) {
             console.warn("A animação ainda não foi carregada ou não existe no modelo.");
             return;
         }
 
-        // ✔️ Lógica correta: apenas alternar paused
-        actionPrato.paused = !actionPrato.paused;
-
-        btnTexto.innerText = actionPrato.paused
-            ? "Ligar Prato"
-            : "Parar Prato";
+        if (actionPrato.paused) {
+            // Se estava pausado, voltamos a correr
+            actionPrato.paused = false;
+            
+            // Se a animação nunca tiver sido iniciada, o play() garante que começa
+            if (!actionPrato.isRunning()) {
+                actionPrato.play();
+            }
+            
+            btnTexto.innerText = "Parar Prato";
+        } else {
+            // Se estava a correr, pausamos
+            actionPrato.paused = true;
+            btnTexto.innerText = "Ligar Prato";
+        }
     });
 }
