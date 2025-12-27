@@ -2,6 +2,26 @@ import * as THREE from "three";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
+
+//Cores dos botoes
+let alvo = null
+let cor_antiga = null
+let material_antigo = null
+let cor_amarela = new THREE.Color('yellow')
+let cor_vermelha = new THREE.Color("red")
+let cor_verde = new THREE.Color("green")
+let cor_azul = new THREE.Color("blue")
+let cor_castanho = new THREE.Color("brown")
+let cor_laranja = new THREE.Color("orange")
+ 
+let material_novo = new THREE.MeshStandardMaterial({
+ 
+    metalness: 0,
+    roughness: 0.1,
+    transparent: true,
+    opacity: 0.4
+})
+
 // Criar cena do threeJS
 let cena = new THREE.Scene();
 window.cena = cena;
@@ -63,6 +83,69 @@ window.addEventListener('resize', onWindowResize, { passive: true });
 // Chame uma vez para definir o tamanho correto
 onWindowResize();
 
+
+//Codigo botao cores
+
+let btn_amarelo = document.getElementById('btn_amarelo')
+let btn_vermelho = document.getElementById('btn_vermelho')
+let btn_verde = document.getElementById('btn_verde')
+let btn_azul = document.getElementById('btn_azul')
+let btn_castanho = document.getElementById('btn_castanho')
+let btn_laranja = document.getElementById('btn_laranja')
+let btn_repor = document.getElementById('btn_repor')
+let btn_vidro = document.getElementById('btn_vidro')
+ 
+ 
+btn_amarelo.addEventListener('click', function () { mudarCor(cor_amarela) })
+btn_vermelho.addEventListener('click', function () { mudarCor(cor_vermelha) })
+btn_verde.addEventListener('click', function () { mudarCor(cor_verde) })
+btn_azul.addEventListener('click', function () { mudarCor(cor_azul) })
+btn_castanho.addEventListener('click', function () { mudarCor(cor_castanho) })
+btn_laranja.addEventListener('click', function () { mudarCor(cor_laranja) })
+btn_repor.addEventListener('click', repor)
+btn_vidro.addEventListener('click',  mudarMaterial)
+ 
+ 
+function mudarCor(cor_nova) {
+    if (alvo == null) return
+ 
+    if (alvo.material.color.equals(cor_nova)) return
+ 
+    if (cor_antiga == null)
+        cor_antiga = alvo.material.color.clone()
+ 
+    alvo.material.color.copy(cor_nova)
+    alvo.material.needsUpdate = true
+}
+ 
+function repor() {
+    if (alvo == null)
+        return
+ 
+    if (material_antigo != null)
+        alvo.material = material_antigo
+ 
+    if (cor_antiga != null) {
+        alvo.material.color = cor_antiga
+        cor_antiga = null
+    }
+ 
+    alvo.castShadow = true
+    alvo.visible = true
+}
+ 
+ 
+function mudarMaterial(){
+    if(alvo== null)
+        return
+   
+    if ( material_antigo != null)
+        null
+ 
+    material_antigo = alvo.material
+    alvo.material = material_novo
+}
+
 // Carregar modelo, ajustar luzes, e preparar cena exemplo
 new GLTFLoader().load(
     // Caminho do Modelo
@@ -70,6 +153,16 @@ new GLTFLoader().load(
     function (gltf) {
         // Informação: 1 Unidade = 0.1m = 1 dm = 10 cm
         cena.add(gltf.scene);
+
+        gltf.scene.traverse((obj) => {
+            if (obj.isMesh) {
+                if (obj.name === "Base") {
+                    alvo = obj;
+                   
+                }
+            }
+        });
+        
         let baseMeshes = [];
  
        gltf.scene.traverse((obj) => {
