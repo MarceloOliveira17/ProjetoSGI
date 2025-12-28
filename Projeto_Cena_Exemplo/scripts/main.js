@@ -13,9 +13,9 @@ let cor_verde = new THREE.Color("green")
 let cor_azul = new THREE.Color("blue")
 let cor_castanho = new THREE.Color("brown")
 let cor_laranja = new THREE.Color("orange")
- 
+
 let material_novo = new THREE.MeshStandardMaterial({
- 
+
     metalness: 0,
     roughness: 0.1,
     transparent: true,
@@ -27,7 +27,13 @@ let cena = new THREE.Scene();
 window.cena = cena;
 
 let mixer = null;         // O misturador de animações
-let actionPrato = null;   // A ação específica do prato
+let actionPrato = null;
+let actionPickup = null;
+
+let actionTampa = null; // Ação da tampa
+let tampaMesh = null;   // O objeto 3D da tampa para detetar o clique
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
 
 // Criar Renderer
 const threeCanvas = document.getElementById('three-canvas');
@@ -94,8 +100,8 @@ let btn_castanho = document.getElementById('btn_castanho')
 let btn_laranja = document.getElementById('btn_laranja')
 let btn_repor = document.getElementById('btn_repor')
 let btn_vidro = document.getElementById('btn_vidro')
- 
- 
+
+
 btn_amarelo.addEventListener('click', function () { mudarCor(cor_amarela) })
 btn_vermelho.addEventListener('click', function () { mudarCor(cor_vermelha) })
 btn_verde.addEventListener('click', function () { mudarCor(cor_verde) })
@@ -103,45 +109,45 @@ btn_azul.addEventListener('click', function () { mudarCor(cor_azul) })
 btn_castanho.addEventListener('click', function () { mudarCor(cor_castanho) })
 btn_laranja.addEventListener('click', function () { mudarCor(cor_laranja) })
 btn_repor.addEventListener('click', repor)
-btn_vidro.addEventListener('click',  mudarMaterial)
- 
- 
+btn_vidro.addEventListener('click', mudarMaterial)
+
+
 function mudarCor(cor_nova) {
     if (alvo == null) return
- 
+
     if (alvo.material.color.equals(cor_nova)) return
- 
+
     if (cor_antiga == null)
         cor_antiga = alvo.material.color.clone()
- 
+
     alvo.material.color.copy(cor_nova)
     alvo.material.needsUpdate = true
 }
- 
+
 function repor() {
     if (alvo == null)
         return
- 
+
     if (material_antigo != null)
         alvo.material = material_antigo
- 
+
     if (cor_antiga != null) {
         alvo.material.color = cor_antiga
         cor_antiga = null
     }
- 
+
     alvo.castShadow = true
     alvo.visible = true
 }
- 
- 
-function mudarMaterial(){
-    if(alvo== null)
+
+
+function mudarMaterial() {
+    if (alvo == null)
         return
-   
-    if ( material_antigo != null)
+
+    if (material_antigo != null)
         null
- 
+
     material_antigo = alvo.material
     alvo.material = material_novo
 }
@@ -158,14 +164,14 @@ new GLTFLoader().load(
             if (obj.isMesh) {
                 if (obj.name === "Base") {
                     alvo = obj;
-                   
+
                 }
             }
         });
-        
+
         let baseMeshes = [];
- 
-       gltf.scene.traverse((obj) => {
+
+        gltf.scene.traverse((obj) => {
             if (obj.isMesh) {
                 if (obj.name === "Base") {
                     obj.material = obj.material.clone();
@@ -176,12 +182,34 @@ new GLTFLoader().load(
 
         mixer = new THREE.AnimationMixer(gltf.scene);
         if (gltf.animations.length > 0) {
-            actionPrato = mixer.clipAction(gltf.animations[0]);
+            const clipPrato = THREE.AnimationClip.findByName(gltf.animations, "VinylDiskAction");
+            const clipPickup = THREE.AnimationClip.findByName(gltf.animations, "PickupAction");
+            const clipTampa = THREE.AnimationClip.findByName(gltf.animations, "DustCoverAction");
+
+            actionPrato = mixer.clipAction(clipPrato);
             actionPrato.loop = THREE.LoopRepeat;
+
+            actionPickup = mixer.clipAction(clipPickup);
+
+            if (clipTampa) {
+                actionTampa = mixer.clipAction(clipTampa);
+                actionTampa.setLoop(THREE.LoopOnce);
+                actionTampa.clampWhenFinished = true;
+            }
 
             // Iniciar a animação do prato, mas pausada
             actionPrato.play();
             actionPrato.paused = true;
+
+            actionPickup.play();
+            actionPickup.paused = true;
+
+            // 2. Identificar o objeto da tampa para o clique
+            gltf.scene.traverse((obj) => {
+                if (obj.isMesh && (obj.name === "DustCover" || obj.name === "Tampa")) {
+                    tampaMesh = obj;
+                }
+            });
         }
 
 
@@ -190,7 +218,7 @@ new GLTFLoader().load(
             if (obj.isMesh) {
                 obj.castShadow = true;
                 obj.receiveShadow = true;
-                
+
                 // Garantir que o material seja atualizado se necessário
                 if (Array.isArray(obj.material)) {
                     obj.material.forEach(m => {
@@ -215,7 +243,7 @@ new GLTFLoader().load(
         document.querySelectorAll(".color-btn").forEach(btn => {
             btn.addEventListener("click", () => {
                 const color = btn.dataset.color;
- 
+
                 baseMeshes.forEach(mesh => {
                     mesh.material.color.set(color);
                     mesh.material.needsUpdate = true;
@@ -246,8 +274,8 @@ new GLTFLoader().load(
             console.warn('Could not compute model center or reposition camera:', err);
         }
 
-                console.log(
-        gltf.animations.map(a => a.name)
+        console.log(
+            gltf.animations.map(a => a.name)
         );
 
     }
@@ -259,7 +287,7 @@ new GLTFLoader().load(
     let delta = 0;
     let relogio = new THREE.Clock();
     let latencia_minima = 1 / 60; // para 60 frames por segundo 
-    
+
     animar();
 
     function animar() {
@@ -273,8 +301,8 @@ new GLTFLoader().load(
         // Atualize os helpers de luz, se existirem
         cena.traverse((child) => {
             if (
-                child instanceof THREE.PointLightHelper || 
-                child instanceof THREE.SpotLightHelper || 
+                child instanceof THREE.PointLightHelper ||
+                child instanceof THREE.SpotLightHelper ||
                 child instanceof THREE.DirectionalLightHelper
             ) {
                 child.update();
@@ -287,26 +315,65 @@ new GLTFLoader().load(
 
     const btnPrato = document.getElementById('btn-prato');
     const btnTexto = btnPrato.querySelector('span');
-    btnPrato.addEventListener('click', () => {
-        if (!actionPrato) {
+    btnPrato.addEventListener('click', (evento) => {
+        evento.stopPropagation();
+        if (!actionPrato || !actionPickup) {
             console.warn("A animação ainda não foi carregada ou não existe no modelo.");
             return;
         }
 
-        if (actionPrato.paused) {
+        if (actionPrato.paused || actionPickup.paused) {
             // Se estava pausado, voltamos a correr
             actionPrato.paused = false;
-            
+            actionPickup.paused = false;
+
             // Se a animação nunca tiver sido iniciada, o play() garante que começa
-            if (!actionPrato.isRunning()) {
+            if (!actionPrato.isRunning() || !actionPickup.isRunning()) {
                 actionPrato.play();
+                actionPickup.play();
             }
-            
-            btnTexto.innerText = "Parar Prato";
+
+            btnTexto.innerText = "Stop";
         } else {
             // Se estava a correr, pausamos
             actionPrato.paused = true;
-            btnTexto.innerText = "Ligar Prato";
+            actionPickup.paused = true;
+            btnTexto.innerText = "play";
+        }
+    });
+
+    threeCanvas.addEventListener('click', (evento) => {
+        // 1. Cálculo das coordenadas do rato relativo ao canvas
+        const rect = threeCanvas.getBoundingClientRect();
+        mouse.x = ((evento.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((evento.clientY - rect.top) / rect.height) * 2 + 1;
+
+        // 2. Atualizar o Raycaster
+        raycaster.setFromCamera(mouse, camara);
+
+        // 3. Verificar colisão com a tampa
+        if (tampaMesh && actionTampa) {
+            const intersecoes = raycaster.intersectObject(tampaMesh);
+
+            if (intersecoes.length > 0) {
+                // Se a animação terminou ou está parada, invertemos a direção
+                actionTampa.paused = false;
+
+                // Lógica de inversão: 
+                // Se a velocidade era positiva (abrir), passa a negativa (fechar) e vice-versa
+                actionTampa.timeScale *= -1;
+
+                // Se a animação tiver chegado ao fim e quisermos voltar atrás, 
+                // precisamos de garantir que ela não fica "presa" no estado final
+                if (actionTampa.time === 0 && actionTampa.timeScale === -1) {
+                    actionTampa.time = actionTampa.getClip().duration;
+                } else if (actionTampa.time === actionTampa.getClip().duration && actionTampa.timeScale === 1) {
+                    actionTampa.time = 0;
+                }
+
+                actionTampa.play();
+                console.log(actionTampa.timeScale === 1 ? "A abrir tampa..." : "A fechar tampa...");
+            }
         }
     });
 }
