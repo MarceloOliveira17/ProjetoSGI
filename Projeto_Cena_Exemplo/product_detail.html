@@ -1,100 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 
 <head>
   <meta charset="UTF-8">
-  <title>Projeto prático Avaliação SGI</title>
+  <title>La Redoute - Detalhe 3D</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+  <header class="la-header">
+    <img src="images/header_productDetail.png" alt="Header La Redoute">
+  </header>
+
+  <main class="product-detail-layout">
+
+    <div class="visualizer-side">
+      <div id="container">
+        <div id="canvas-container">
+          <canvas id="three-canvas"></canvas>
+          <div class="thumbnails-slider">
+            <div class="thumb active"><img src="images/Exemplo1.png" alt="Vista 1"></div>
+            <div class="thumb"><img src="images/Exemplo2.png" alt="Vista 2"></div>
+            <div class="thumb"><img src="images/Exemplo3.png" alt="Vista 3"></div>
+            <div class="thumb"><img src="images/Exemplo4.png" alt="Vista 4"></div>
+            <div class="thumb"><img src="images/Exemplo5.png" alt="Vista 5"></div>
+            <div class="thumb"><img src="images/Exemplo6.png" alt="Vista 6"></div>
+            <div class="thumb"><img src="images/Exemplo7.png" alt="Vista 7"></div>
+          </div>
+        </div>
+      </div>
+
+      <button id="btn-prato">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+        <span>Play</span>
+      </button>
+
+      <button id="help-button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20">
+          <path fill-rule="evenodd"
+            d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM8.94 6.94a.75.75 0 1 1-1.061-1.061 3 3 0 1 1 2.871 5.026v.345a.75.75 0 0 1-1.5 0v-.5c0-.72.57-1.172 1.081-1.287A1.5 1.5 0 1 0 8.94 6.94ZM10 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+            clip-rule="evenodd" />
+        </svg>
+        <span>Ajuda</span>
+      </button>
+    </div>
+
+    <aside class="info-side">
+      <img src="images/sidebar_productDetail.png" alt="Informação Produto">
+
+      <div id="color-menu">
+        <p>Escolher cor:</p>
+        <div class="buttons-grid">
+          <button id="btn_repor" class="color-btn ori" title="Original"></button>
+          <button id="btn_vidro" class="color-btn glass" title="Vidro"></button>
+          <button id="btn_castanho" class="color-btn brown" title="Castanho"></button>
+          <button id="btn_laranja" class="color-btn orange" title="Laranja"></button>
+          <button id="btn_amarelo" class="color-btn yellow" title="Amarelo"></button>
+          <button id="btn_verde" class="color-btn green" title="Verde"></button>
+          <button id="btn_vermelho" class="color-btn red" title="Vermelho"></button>
+          <button id="btn_azul" class="color-btn blue" title="Azul"></button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="la-footer">
+    <img src="images/footer_productDetail.png" alt="Footer La Redoute">
+  </footer>
+
   <div id="video-overlay" class="overlay video-fullscreen">
-    <button id="video-close-button" class="video-close-button">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-        class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-      </svg>
-    </button>
+    <button id="video-close-button" class="video-close-button">X</button>
     <video autoplay loop muted>
       <source src="images/animacao_braco.mp4" type="video/mp4">
-      Seu navegador não suporta o elemento de vídeo.
     </video>
   </div>
 
-  <div id="container">
-    <div id="canvas-container">
-      <canvas id="three-canvas"></canvas>
-    </div>
-  </div>
-
-  <div id="color-menu">
-    <button id="btn_repor">Original</button>
-    <button id="btn_castanho">Castanho</button>
-    <button id="btn_laranja">Laranja</button>
-    <button id="btn_amarelo">Amarelo</button>
-    <button id="btn_verde">Verde</button>
-    <button id="btn_vermelho">Vermelho</button>
-    <button id="btn_azul">Azul</button>
-    <button id="btn_vidro">Vidro</button>
-  </div>
-
-  <button id="help-button">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <path fill-rule="evenodd"
-        d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM8.94 6.94a.75.75 0 1 1-1.061-1.061 3 3 0 1 1 2.871 5.026v.345a.75.75 0 0 1-1.5 0v-.5c0-.72.57-1.172 1.081-1.287A1.5 1.5 0 1 0 8.94 6.94ZM10 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-        clip-rule="evenodd" />
-    </svg>
-    <span>Ajuda</span>
-  </button>
-  <!--Plate play button-->
-  <button id="btn-prato" style="pointer-events: auto; cursor: pointer;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polygon points="5 3 19 12 5 21 5 3"></polygon>
-    </svg>
-    <span>Play</span>
-  </button>
-
   <div id="overlay" class="overlay">
-
-    <button id="annotations-toggle" class="annotations-toggle" aria-pressed="false">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-        <path fill-rule="evenodd"
-          d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z"
-          clip-rule="evenodd" />
-      </svg>
-      <span>Mostrar Sem Anotações</span>
-    </button>
-    <button id="help-close-button" class="help-close-button" aria-label="Fechar ajuda">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-        class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-      </svg>
-    </button>
-    <img src="images/informacao_comfiltros.png" alt="Imagem de ajuda">
-    <img id="image-container" src="images/informacao_semfiltros.png" alt="Informação sem filtros">
-    <button id="video-button">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path fill-rule="evenodd"
-          d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
-          clip-rule="evenodd" />
-      </svg>
-      <span>Demonstração da Animação do Braço do Gira-discos</span>
-    </button>
+    <button id="annotations-toggle" class="annotations-toggle"><span>Anotações</span></button>
+    <button id="help-close-button" class="help-close-button">X</button>
+    <img src="images/informacao_comfiltros.png" alt="Ajuda">
+    <img id="image-container" src="images/informacao_semfiltros.png">
+    <button id="video-button"><span>Vídeo</span></button>
   </div>
 
-  <!-- Scripts -->
   <script src="/node_modules/es-module-shims.js"></script>
   <script src="./scripts/overlay.js" type="module"></script>
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "/node_modules/three/build/three.module.js",
-      "three/addons/": "/node_modules/three/examples/jsm/"
-    }
-  }
-  </script>
+  <script
+    type="importmap">{ "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }</script>
   <script type="module" defer src="./scripts/main.js"></script>
 </body>
 
