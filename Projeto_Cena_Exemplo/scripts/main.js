@@ -73,9 +73,9 @@ function onWindowResize() {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    // Redimensiona o estilo do canvas e o buffer de desenho do renderer
+    /*// Redimensiona o estilo do canvas e o buffer de desenho do renderer
     threeCanvas.style.width = width + 'px';
-    threeCanvas.style.height = height + 'px';
+    threeCanvas.style.height = height + 'px';*/
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
@@ -102,14 +102,14 @@ let btn_repor = document.getElementById('btn_repor')
 let btn_vidro = document.getElementById('btn_vidro')
 
 
-btn_amarelo.addEventListener('click', function () { mudarCor(cor_amarela) })
-btn_vermelho.addEventListener('click', function () { mudarCor(cor_vermelha) })
-btn_verde.addEventListener('click', function () { mudarCor(cor_verde) })
-btn_azul.addEventListener('click', function () { mudarCor(cor_azul) })
-btn_castanho.addEventListener('click', function () { mudarCor(cor_castanho) })
-btn_laranja.addEventListener('click', function () { mudarCor(cor_laranja) })
-btn_repor.addEventListener('click', repor)
-btn_vidro.addEventListener('click', mudarMaterial)
+if(btn_amarelo) btn_amarelo.addEventListener('click', function () { mudarCor(cor_amarela) });
+if(btn_vermelho) btn_vermelho.addEventListener('click', function () { mudarCor(cor_vermelha) });
+if(btn_verde) btn_verde.addEventListener('click', function () { mudarCor(cor_verde) });
+if(btn_azul) btn_azul.addEventListener('click', function () { mudarCor(cor_azul) });
+if(btn_castanho) btn_castanho.addEventListener('click', function () { mudarCor(cor_castanho) });
+if(btn_laranja) btn_laranja.addEventListener('click', function () { mudarCor(cor_laranja) });
+if(btn_repor) btn_repor.addEventListener('click', repor);
+if(btn_vidro) btn_vidro.addEventListener('click', mudarMaterial);
 
 
 function mudarCor(cor_nova) {

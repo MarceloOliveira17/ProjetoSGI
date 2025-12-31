@@ -1,0 +1,81 @@
+/* 1. Reset e Limitação de Largura */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: auto; /* Deixa a página crescer naturalmente */
+    background-color: #f6f6f6;
+}
+
+/* Criamos um wrapper para a página não esticar infinitamente */
+.full-page-container {
+    position: relative;
+    width: 100%;
+    max-width: 1440px; /* Impede o zoom excessivo em ecrãs grandes */
+    margin: 0 auto;    /* Centra a página */
+    overflow: hidden;
+}
+
+.responsive-print {
+    width: 100%;
+    height: auto;      /* Mantém a proporção da imagem original */
+    display: block;
+}
+
+/* 2. O Contentor do 3D (O "Remendo" Ajustável) */
+#canvas-container {
+    position: absolute;
+    /* Ajusta estes % para o 3D encaixar na moldura da foto original */
+    top: 18%; 
+    left: 8%; 
+    width: 50%; 
+    height: 55%; 
+    background: #fff; 
+    z-index: 5;
+}
+
+/* O Canvas deve ocupar 100% do seu PAI (#canvas-container), não do ecrã */
+#three-canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+/* Removemos o 100vh do teu antigo #container */
+#container {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.visualizer-side {
+    flex: 1.5;
+    position: relative;
+    background: #ffffff; /* Fundo branco para bater com a loja */
+    min-height: 600px;    /* Aumentado para o modelo ter espaço */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#canvas-container {
+    width: 100%;
+    height: 600px; /* Altura fixa é vital para o Three.js */
+    position: relative;
+}
+
+/* Garante que o menu de cores não desformata a sidebar */
+.buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.color-btn {
+    padding: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 4px;
+}
