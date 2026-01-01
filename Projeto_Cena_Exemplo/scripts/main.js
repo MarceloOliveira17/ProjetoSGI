@@ -102,14 +102,14 @@ let btn_repor = document.getElementById('btn_repor')
 let btn_vidro = document.getElementById('btn_vidro')
 
 
-if(btn_amarelo) btn_amarelo.addEventListener('click', function () { mudarCor(cor_amarela) });
-if(btn_vermelho) btn_vermelho.addEventListener('click', function () { mudarCor(cor_vermelha) });
-if(btn_verde) btn_verde.addEventListener('click', function () { mudarCor(cor_verde) });
-if(btn_azul) btn_azul.addEventListener('click', function () { mudarCor(cor_azul) });
-if(btn_castanho) btn_castanho.addEventListener('click', function () { mudarCor(cor_castanho) });
-if(btn_laranja) btn_laranja.addEventListener('click', function () { mudarCor(cor_laranja) });
-if(btn_repor) btn_repor.addEventListener('click', repor);
-if(btn_vidro) btn_vidro.addEventListener('click', mudarMaterial);
+if (btn_amarelo) btn_amarelo.addEventListener('click', function () { mudarCor(cor_amarela) });
+if (btn_vermelho) btn_vermelho.addEventListener('click', function () { mudarCor(cor_vermelha) });
+if (btn_verde) btn_verde.addEventListener('click', function () { mudarCor(cor_verde) });
+if (btn_azul) btn_azul.addEventListener('click', function () { mudarCor(cor_azul) });
+if (btn_castanho) btn_castanho.addEventListener('click', function () { mudarCor(cor_castanho) });
+if (btn_laranja) btn_laranja.addEventListener('click', function () { mudarCor(cor_laranja) });
+if (btn_repor) btn_repor.addEventListener('click', repor);
+if (btn_vidro) btn_vidro.addEventListener('click', mudarMaterial);
 
 
 function mudarCor(cor_nova) {
@@ -191,6 +191,9 @@ new GLTFLoader().load(
 
             actionPickup = mixer.clipAction(clipPickup);
 
+            actionPickup.setLoop(THREE.LoopOnce); // Faz a animação correr apenas uma vez
+            actionPickup.clampWhenFinished = true; // Mantém o objeto no último frame quando terminar
+
             if (clipTampa) {
                 actionTampa = mixer.clipAction(clipTampa);
                 actionTampa.setLoop(THREE.LoopOnce);
@@ -250,6 +253,7 @@ new GLTFLoader().load(
                 });
             });
         });
+        
 
         // Calcular o centro da caixa delimitadora do modelo e recentralizar
         try {
@@ -313,66 +317,76 @@ new GLTFLoader().load(
         delta = delta % latencia_minima;
     }
 
+
+    // 1. Define os desenhos dos ícones (apenas a parte de dentro do SVG)
+    const iconePlay = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+    const iconePause = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
+
     const btnPrato = document.getElementById('btn-prato');
-    const btnTexto = btnPrato.querySelector('span');
+    const iconSvg = document.getElementById('icon-svg'); // O SVG
+    const btnTexto = btnPrato.querySelector('span');    // O Texto
+
     btnPrato.addEventListener('click', (evento) => {
         evento.stopPropagation();
-        if (!actionPrato || !actionPickup) {
-            console.warn("A animação ainda não foi carregada ou não existe no modelo.");
-            return;
-        }
 
-        if (actionPrato.paused || actionPickup.paused) {
-            // Se estava pausado, voltamos a correr
+        if (!actionPrato || !actionPickup) return;
+
+        if (actionPrato.paused) {
+            // --- ESTADO: VAI COMEÇAR A TOCAR ---
             actionPrato.paused = false;
+            actionPrato.play();
+
             actionPickup.paused = false;
+            actionPickup.timeScale = 1;
+            actionPickup.play();
 
-            // Se a animação nunca tiver sido iniciada, o play() garante que começa
-            if (!actionPrato.isRunning() || !actionPickup.isRunning()) {
-                actionPrato.play();
-                actionPickup.play();
-            }
-
+            // Mudar para ícone de PAUSE e texto STOP
+            iconSvg.innerHTML = iconePause;
             btnTexto.innerText = "Stop";
-        } else {
-            // Se estava a correr, pausamos
+        }
+        else {
+            // --- ESTADO: VAI PARAR ---
             actionPrato.paused = true;
-            actionPickup.paused = true;
-            btnTexto.innerText = "play";
+
+            actionPickup.paused = false;
+            actionPickup.timeScale = -1;
+            actionPickup.play();
+
+            // Mudar para ícone de PLAY e texto PLAY
+            iconSvg.innerHTML = iconePlay;
+            btnTexto.innerText = "Play";
         }
     });
 
     threeCanvas.addEventListener('click', (evento) => {
-        // 1. Cálculo das coordenadas do rato relativo ao canvas
         const rect = threeCanvas.getBoundingClientRect();
         mouse.x = ((evento.clientX - rect.left) / rect.width) * 2 - 1;
         mouse.y = -((evento.clientY - rect.top) / rect.height) * 2 + 1;
 
-        // 2. Atualizar o Raycaster
         raycaster.setFromCamera(mouse, camara);
 
-        // 3. Verificar colisão com a tampa
         if (tampaMesh && actionTampa) {
             const intersecoes = raycaster.intersectObject(tampaMesh);
 
             if (intersecoes.length > 0) {
-                // Se a animação terminou ou está parada, invertemos a direção
+                // 1. Tirar a animação do estado de pausa
                 actionTampa.paused = false;
 
-                // Lógica de inversão: 
-                // Se a velocidade era positiva (abrir), passa a negativa (fechar) e vice-versa
+                // 2. Inverter a direção
                 actionTampa.timeScale *= -1;
 
-                // Se a animação tiver chegado ao fim e quisermos voltar atrás, 
-                // precisamos de garantir que ela não fica "presa" no estado final
-                if (actionTampa.time === 0 && actionTampa.timeScale === -1) {
+                // 3. Se a animação terminou no estado "aberto" e queremos fechar
+                if (actionTampa.timeScale === -1 && actionTampa.time >= actionTampa.getClip().duration) {
                     actionTampa.time = actionTampa.getClip().duration;
-                } else if (actionTampa.time === actionTampa.getClip().duration && actionTampa.timeScale === 1) {
+                }
+                // 4. Se a animação terminou no estado "fechado" e queremos abrir
+                else if (actionTampa.timeScale === 1 && actionTampa.time <= 0) {
                     actionTampa.time = 0;
                 }
 
+                // 5. Garantir que o mixer continua a processar a animação
                 actionTampa.play();
-                console.log(actionTampa.timeScale === 1 ? "A abrir tampa..." : "A fechar tampa...");
+
             }
         }
     });
