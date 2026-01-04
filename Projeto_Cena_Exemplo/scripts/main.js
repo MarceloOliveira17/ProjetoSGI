@@ -30,8 +30,8 @@ let mixer = null;         // O misturador de animações
 let actionPrato = null;
 let actionPickup = null;
 
-let actionTampa = null; // Ação da tampa
-let tampaMesh = null;   // O objeto 3D da tampa para detetar o clique
+let actionTampa = null;
+let tampaMesh = null;  
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
@@ -250,18 +250,16 @@ new GLTFLoader().load(
                 });
             });
         });
-        
 
-        // Calcular o centro da caixa delimitadora do modelo e recentralizar
+
+
         try {
             const bbox = new THREE.Box3().setFromObject(gltf.scene);
             const modelCenter = new THREE.Vector3();
             bbox.getCenter(modelCenter);
 
-            // Mover controls.target para o centro do modelo
             controls.target.copy(modelCenter);
 
-            // Manter o deslocamento da câmara relativo ao centro do modelo
             const currentCamPos = camara.position.clone();
             const offsetFromOrigin = currentCamPos.clone();
 
@@ -315,13 +313,13 @@ new GLTFLoader().load(
     }
 
 
-    //Define os desenhos dos ícones (apenas a parte de dentro do SVG)
+    //Desenhos dos icones
     const iconePlay = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
     const iconePause = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
 
     const btnPrato = document.getElementById('btn-prato');
-    const iconSvg = document.getElementById('icon-svg'); 
-    const btnTexto = btnPrato.querySelector('span');    
+    const iconSvg = document.getElementById('icon-svg');
+    const btnTexto = btnPrato.querySelector('span');
 
     btnPrato.addEventListener('click', (evento) => {
         evento.stopPropagation();

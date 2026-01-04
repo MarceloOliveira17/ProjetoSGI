@@ -1,4 +1,4 @@
-/* Layout Puzzle */
+
 .product-detail-layout {
     display: flex;
     max-width: 1300px;
@@ -6,17 +6,17 @@
     gap: 40px;
 }
 
-/* Lado Esquerdo */
+
 .visualizer-side {
     flex: 1.5;
     position: relative;
     background: #f9f9f9;
-    min-height: 500px; /* IMPORTANTE para o Three.js aparecer */
+    min-height: 500px; 
 }
 
 #canvas-container {
     width: 100%;
-    height: 100%; /* Ocupa o min-height do pai */
+    height: 100%; 
     min-height: 500px;
     position: relative;
 }
@@ -27,7 +27,6 @@
     display: block;
 }
 
-/* Ajuste dos teus botões sobre o 3D */
 #btn-prato {
     position: absolute;
     bottom: 20px;
@@ -42,7 +41,6 @@
     z-index: 10;
 }
 
-/* Lado Direito */
 .info-side {
     flex: 1;
     max-width: 400px;
@@ -50,7 +48,6 @@
 
 .info-side img { width: 100%; }
 
-/* Teu Color Menu posicionado na sidebar */
 #color-menu {
     margin-top: 20px;
     padding: 15px;
@@ -64,33 +61,31 @@
     gap: 5px;
 }
 
-/* Rodapé e Topo */
 .la-header img, .la-footer img {
     width: 100%;
     display: block;
 }
 
-/* Teus Overlays (Mantém o estilo que já tinhas) */
+
 .overlay {
-    /* Mantém o teu CSS original aqui */
     position: fixed;
     z-index: 999;
 }
 
-/* Contentor dos botões em grelha */
+
 .buttons-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 colunas de círculos */
+    grid-template-columns: repeat(4, 1fr); 
     gap: 15px;
     margin-top: 10px;
     justify-items: center;
 }
 
-/* Estilo base do botão (Círculo) */
+
 .color-btn {
     width: 35px;
     height: 35px;
-    border-radius: 50%; /* Faz o botão ser redondo */
+    border-radius: 50%; 
     border: 2px solid #ddd;
     cursor: pointer;
     padding: 0;
@@ -99,20 +94,20 @@
 }
 
 .color-btn:hover {
-    transform: scale(1.15); /* Aumenta um pouco ao passar o rato */
-    border-color: #000;    /* Borda preta no destaque */
+    transform: scale(1.15); 
+    border-color: #000;    
 }
 
-/* Definição das Cores Reais */
-.ori    { background-color: #d1d1d1; } /* Cinza claro */
-.brown  { background-color: #8B4513; } /* Castanho */
-.orange { background-color: #FF8C00; } /* Laranja */
-.yellow { background-color: #FFD700; } /* Amarelo */
-.green  { background-color: #2E8B57; } /* Verde */
-.red    { background-color: #B22222; } /* Vermelho */
-.blue   { background-color: #00008B; } /* Azul escuro */
 
-/* Efeito especial para o Vidro */
+.ori    { background-color: #d1d1d1; }
+.brown  { background-color: #8B4513; } 
+.orange { background-color: #FF8C00; } 
+.yellow { background-color: #FFD700; } 
+.green  { background-color: #2E8B57; } 
+.red    { background-color: #B22222; } 
+.blue   { background-color: #00008B; } 
+
+
 .glass { 
     background: linear-gradient(135deg, #e0f7fa 0%, #80deea 100%);
     border: 2px solid #00bcd4;
@@ -139,7 +134,7 @@
 .thumb img {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Garante que a imagem não fica distorcida */
+    object-fit: contain; 
 }
 
 .thumb:hover {
@@ -147,5 +142,5 @@
 }
 
 .thumb.active {
-    border: 2px solid #000; /* Destaque da imagem selecionada */
+    border: 2px solid #000; 
 }
