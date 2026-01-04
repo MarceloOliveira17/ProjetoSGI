@@ -42,7 +42,7 @@ const threeCanvas = document.getElementById('three-canvas');
 let renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.setSize(threeCanvas.clientWidth, threeCanvas.clientHeight);
-renderer.setClearColor(0xffffff); // Cor de Fundo (Branco neste caso concreto)
+renderer.setClearColor(0xffffff);
 
 // Ativar renderização de mapa de sombras
 renderer.shadowMap.enabled = true;
@@ -73,9 +73,6 @@ function onWindowResize() {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    /*// Redimensiona o estilo do canvas e o buffer de desenho do renderer
-    threeCanvas.style.width = width + 'px';
-    threeCanvas.style.height = height + 'px';*/
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
@@ -318,13 +315,13 @@ new GLTFLoader().load(
     }
 
 
-    // 1. Define os desenhos dos ícones (apenas a parte de dentro do SVG)
+    //Define os desenhos dos ícones (apenas a parte de dentro do SVG)
     const iconePlay = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
     const iconePause = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
 
     const btnPrato = document.getElementById('btn-prato');
-    const iconSvg = document.getElementById('icon-svg'); // O SVG
-    const btnTexto = btnPrato.querySelector('span');    // O Texto
+    const iconSvg = document.getElementById('icon-svg'); 
+    const btnTexto = btnPrato.querySelector('span');    
 
     btnPrato.addEventListener('click', (evento) => {
         evento.stopPropagation();
@@ -345,7 +342,6 @@ new GLTFLoader().load(
             btnTexto.innerText = "Stop";
         }
         else {
-            // --- ESTADO: VAI PARAR ---
             actionPrato.paused = true;
 
             actionPickup.paused = false;
