@@ -1,8 +1,7 @@
-/* 1. O contentor tem de ser o ponto de referência */
 .full-page-container {
     position: relative;
     width: 100%;
-    display: inline-block; /* Garante que o container se ajusta à imagem */
+    display: inline-block;
 }
 
 .responsive-print {
@@ -11,24 +10,22 @@
     display: block;
 }
 
-/* 2. O Card do produto flutua por cima da imagem */
 .product-card {
     position: absolute;
-    
-    /* AJUSTE DE POSIÇÃO: Altera estes valores para alinhar com os outros */
-    top: 27%;           /* Distância do topo da imagem */
-    left: 35%;          /* Distância da esquerda (75% costuma ser a 4ª coluna) */
-    
-    /* AJUSTE DE TAMANHO */
-    width: 30%;         /* Ajusta para ficar do tamanho dos outros na imagem */
-    
+
+
+    top: 27%;
+    left: 35%;
+
+
+    width: 30%;
+
     background-color: white;
     padding: 2px;
     z-index: 10;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Garante que a imagem do novo gira-discos não estoura o card */
 .product-image-wrapper img {
     width: 100%;
     height: auto;
